@@ -2,6 +2,17 @@
 https://habrahabr.ru/post/150267/
 http://www.elisdn.ru/blog/47/routing-in-frameworks-url-managing
 
+Хостинг версий
+https://github.com/tecdoc-ukr/simple-nano-framework/releases
+https://yadi.sk/d/eCi7far86ltWRQ
+
+
+в.05
+~~~~~~~
++) title веб страницы для контроллера
++) Переработан class Request
+-) убран закрывающий php-тег "?>"
+
 
 в.04
 ~~~~~~~

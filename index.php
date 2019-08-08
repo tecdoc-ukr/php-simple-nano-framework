@@ -1,9 +1,9 @@
 <?php 
 /*************************************************************
 Точка входа в MVC:
-+) маршрутизирует (подключает) контроллер полученного action, некоректный action перебрасывает на $controller_index
++) маршрутизирует (подключает) контроллер полученного action. Некорректный action перебрасывает на $controller_index
 +) формирует всю html-страницу: header.html, menu.html, footer.html
-+) автоматическая загрузка View для совего Controller
++) автоматическая загрузка View для своего Controller
 +) создание класса проверки параметров REQUEST
 *************************************************************/
 
@@ -24,7 +24,7 @@ $INX_request = new Request($CNF_request);
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // МАРШРУТИЗАЦИЯ
 //------------------------------------
-$controller = isset($_REQUEST['action']) ? $_REQUEST['action'] : $CNF_controller_index;
+$controller = $INX_request->get('action', $CNF_controller_index);
 $controller_path = $CNF_controllers_dir.$controller.'.php';
 $view_path = $CNF_views_dir.$controller.'.html';
 
@@ -39,6 +39,7 @@ if(!file_exists($controller_path) or !file_exists($view_path)){
     die($CNF_error_msg);
   }
 }
+require($controller_path);              // Контроллер action
 
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -46,7 +47,5 @@ if(!file_exists($controller_path) or !file_exists($view_path)){
 //------------------------------------
 require($CNF_views_dir.'header.html');  // оглавление 
 require($CNF_views_dir.'menu.html');    // меню
-require($controller_path);              // Контроллер action
 require($view_path);                    // Представление action
 require($CNF_views_dir.'footer.html');  // завершение
-?>

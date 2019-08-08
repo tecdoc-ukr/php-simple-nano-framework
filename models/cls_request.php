@@ -1,11 +1,12 @@
 <?php
 /************************************************************
  * Валидация (проверка/коррекция) входных параметров
- *  29.01.2018
+ *  17.01.2019
  ************************************************************/
 
 class Request{
   private $rules = array();      // array $CNF_request
+  private $params = array();     // array of available and validated $_REQUEST
 
 
 	//~~~~~~~~~~~~~~~~~~~~~~~~
@@ -13,73 +14,37 @@ class Request{
 	//~~~~~~~~~~~~~~~~~~~~~~~~
   function __construct($rules=array()) {
     $this->rules = $rules;
+    $this->create_parameters();
   }
 
 
 	//~~~~~~~~~~~~~~~~~~~~~~~~
-	// Сформировать строку "URL-параметры" из полученных допустимых параметров и валидных значений
-	//  СУТЬ: Объект класа знает список допустимых параметров $rules, поэтому он может сформировать такой запрос
-  //  Необходим для изменения языка интерфейса с сохранением остальных параметров выбора
-  //
-  //  $escape - какие параметры пропускать в результирующем URL
-  //  $need_empty - необходимость включения праметров с пустыми значениями
+  // Валидация параметров $_REQUEST по правилу $this->rules
 	//~~~~~~~~~~~~~~~~~~~~~~~~
-  public function make_url($escape=array(), $need_empty=false){
-    $res = '';
-    $del = '';
+  private function create_parameters(){
+    // перебор всех возможных параметров со своими правилами валидации
     foreach($this->rules as $prm => $rule){
-      if(in_array($prm, $escape)) continue; // пропускаем ненужные параметры
-
-      $val = $this->get($prm);  // определяем валидное значение
-      if(!$need_empty and $val === '') continue; // пропускаем пустые значения
+      if(!isset($_REQUEST[$prm])) continue;
       
-      $res .= $del.$prm.'='.$val; 
-      $del = '&';
+      // Если отсутствует метод валидации - параметр пропускается
+      $validate_method = !empty($rule['method']) ? $rule['method'] : 'validate_word';
+      if(!method_exists($this, $validate_method)) continue;
+
+      // валидация значения параметра
+      $val = $_REQUEST[$prm];
+      $val = self::$validate_method($val, $rule);
+      $this->params[$prm] = $val;
     }
-    
-    return $res;
   }
 
 
 	//~~~~~~~~~~~~~~~~~~~~~~~~
 	// Получить значение параметра
-  //
-  //  prm - имя входного параметра
-  //  def - значение по умолчанию если параметр не был определено в Общих правилах $CNF_request
-  //    алгоритм def: $res = isset($_REQUEST[$prm]) ? $_REQUEST[$prm] : $def;
-  //    Есди параметр $prm определен в Общих правилах $CNF_request то будет использоваться его $CNF_request['def'], 
+  //    prm - имя входного параметра
+  //    def - значение по умолчанию если параметр отсутствует в $this->params
 	//~~~~~~~~~~~~~~~~~~~~~~~~
   public function get($prm='', $def=''){
-    $res = $def;
-    
-    // проверить существует ли для параметра правило в $CNF_request
-    if(!isset($this->rules[$prm])){
-      return $res;
-    }
-    
-    // выберем правило для параметра
-    $rule = $this->rules[$prm];
-    
-    // вычитать значение по умолчанию в правиле, если было задано
-    if(isset($rule['def'])){
-      $res = $rule['def'];
-    }
-
-    // проверяем был ли передан парамет
-    if(!isset($_REQUEST[$prm])){
-      return $res;
-    }
-    
-    // вычитать и проверить метод валидации
-    $validate_method = !empty($rule['method']) ? $rule['method'] : 'validate_word';
-    if(!method_exists($this, $validate_method)){
-      return $res;
-    }
-    
-    // корректируем значение параметра
-    $res = $_REQUEST[$prm];
-    $res = self::$validate_method($res, $prm);
-    
+    $res = isset($this->params[$prm]) ? $this->params[$prm] : $def;
     return $res;
   }
 
@@ -96,18 +61,17 @@ class Request{
       $val = substr($val, 0, $length);
     }
     
-    // верхний регистр
-    if(isset($prm['upper'])){
-      $val = strtoupper($val);
-    }
-    
-    // нижний регистр
-    if(isset($prm['lower'])){
-      $val = strtolower($val);
+    // изменить регистр
+    if(isset($prm['case'])){
+      if($prm['case'] == 'U' or $prm['case'] == 'u'){
+        $val = strtoupper($val);
+      }
+      if($prm['case'] == 'L' or $prm['case'] == 'l'){
+        $val = strtolower($val);
+      }
     }
       
     return $val;
   }
   
 }
-?>
