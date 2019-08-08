@@ -1,4 +1,10 @@
 ﻿<?php 
+/*
+Самый главный модуль:
++) маршрутизирует (подключает) контроллер полученного action, некоректный action перебрасывает на $controller_index
++) формирует всю html-страницу: header.html, menu.html, footer.html
+*/
+
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // НАСТРОЙКИ
 //------------------------------------
@@ -26,6 +32,7 @@ if(!file_exists($action_path)){
 // ЗАПУСК
 //------------------------------------
 require($views_dir.'header.html');
+require($views_dir.'menu.html');
 require($action_path);
 require($views_dir.'footer.html');
 ?>
