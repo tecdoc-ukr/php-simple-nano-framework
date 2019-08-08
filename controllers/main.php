@@ -1,3 +1,5 @@
 ﻿<?php
-require($views_dir.'main.html');
+/*
+Формируем данные для View
+*/
 ?>

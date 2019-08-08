@@ -3,15 +3,17 @@ https://habrahabr.ru/post/150267/
 http://www.elisdn.ru/blog/47/routing-in-frameworks-url-managing
 
 
+в.03
+~~~~~~~
++) автоматическая загрузка View для своего Controller
+
 в.02
 ~~~~~~~
 +) Меню
 
-
 в.01
 ~~~~~~~
 +) Общий конфиг - configuration.php
-
 
 в.00
 ~~~~~~~
