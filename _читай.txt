@@ -3,6 +3,13 @@ https://habrahabr.ru/post/150267/
 http://www.elisdn.ru/blog/47/routing-in-frameworks-url-managing
 
 
+в.04
+~~~~~~~
++) В configuration.php добавлены настройки главного HTML
++) Проверка на наличие файла Контроллера и файла его Представления
++) Кодировка в UTF-8 without BOM
++) Входные параметры - class Request
+
 в.03
 ~~~~~~~
 +) автоматическая загрузка View для своего Controller
