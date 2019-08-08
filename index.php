@@ -1,13 +1,13 @@
 ﻿<?php 
-$controllers_dir = 'controllers/';
-$controller_index = 'index';
-$views_dir = 'views/';
-$error_msg = '<span style="color:red; font-weight:bold">Шо за БРЕД!</span>';
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+// НАСТРОЙКИ
+//------------------------------------
+require('configuration.php');
 
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // МАРШРУТИЗАЦИЯ
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+//------------------------------------
 $action = isset($_REQUEST['action']) ? $_REQUEST['action'] : $controller_index;
 $action_path = $controllers_dir.$action.'.php';
 
@@ -24,7 +24,7 @@ if(!file_exists($action_path)){
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // ЗАПУСК
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+//------------------------------------
 require($views_dir.'header.html');
 require($action_path);
 require($views_dir.'footer.html');
